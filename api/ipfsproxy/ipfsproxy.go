@@ -15,9 +15,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ipfs/ipfs-cluster/adder/adderutils"
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/rpcutil"
+	"github.com/kebohan1/ipfs-cluster/adder/adderutils"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/rpcutil"
 
 	handlers "github.com/gorilla/handlers"
 	mux "github.com/gorilla/mux"

@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	ipfscluster "github.com/ipfs/ipfs-cluster"
-	"github.com/ipfs/ipfs-cluster/cmdutils"
-	"github.com/ipfs/ipfs-cluster/pstoremgr"
-	"github.com/ipfs/ipfs-cluster/version"
+	ipfscluster "github.com/kebohan1/ipfs-cluster"
+	"github.com/kebohan1/ipfs-cluster/cmdutils"
+	"github.com/kebohan1/ipfs-cluster/pstoremgr"
+	"github.com/kebohan1/ipfs-cluster/version"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 

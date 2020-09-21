@@ -8,7 +8,7 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 
-	"github.com/ipfs/ipfs-cluster/config"
+	"github.com/kebohan1/ipfs-cluster/config"
 
 	ma "github.com/multiformats/go-multiaddr"
 )

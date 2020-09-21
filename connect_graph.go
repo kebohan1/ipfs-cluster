@@ -1,8 +1,8 @@
 package ipfscluster
 
 import (
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/rpcutil"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/rpcutil"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 
