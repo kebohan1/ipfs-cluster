@@ -10,7 +10,7 @@ import (
 
 	"go.opencensus.io/trace"
 
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/api"
 )
 
 type responseDecoder func(d *json.Decoder) error
