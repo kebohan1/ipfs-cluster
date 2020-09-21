@@ -7,19 +7,19 @@ import (
 
 	"github.com/pkg/errors"
 
-	ipfscluster "github.com/ipfs/ipfs-cluster"
-	"github.com/ipfs/ipfs-cluster/api/ipfsproxy"
-	"github.com/ipfs/ipfs-cluster/api/rest"
-	"github.com/ipfs/ipfs-cluster/config"
-	"github.com/ipfs/ipfs-cluster/consensus/crdt"
-	"github.com/ipfs/ipfs-cluster/consensus/raft"
-	"github.com/ipfs/ipfs-cluster/datastore/badger"
-	"github.com/ipfs/ipfs-cluster/informer/disk"
-	"github.com/ipfs/ipfs-cluster/informer/numpin"
-	"github.com/ipfs/ipfs-cluster/ipfsconn/ipfshttp"
-	"github.com/ipfs/ipfs-cluster/monitor/pubsubmon"
-	"github.com/ipfs/ipfs-cluster/observations"
-	"github.com/ipfs/ipfs-cluster/pintracker/stateless"
+	ipfscluster "github.com/kebohan1/ipfs-cluster"
+	"github.com/kebohan1/ipfs-cluster/api/ipfsproxy"
+	"github.com/kebohan1/ipfs-cluster/api/rest"
+	"github.com/kebohan1/ipfs-cluster/config"
+	"github.com/kebohan1/ipfs-cluster/consensus/crdt"
+	"github.com/kebohan1/ipfs-cluster/consensus/raft"
+	"github.com/kebohan1/ipfs-cluster/datastore/badger"
+	"github.com/kebohan1/ipfs-cluster/informer/disk"
+	"github.com/kebohan1/ipfs-cluster/informer/numpin"
+	"github.com/kebohan1/ipfs-cluster/ipfsconn/ipfshttp"
+	"github.com/kebohan1/ipfs-cluster/monitor/pubsubmon"
+	"github.com/kebohan1/ipfs-cluster/observations"
+	"github.com/kebohan1/ipfs-cluster/pintracker/stateless"
 )
 
 // Configs carries config types used by a Cluster Peer.

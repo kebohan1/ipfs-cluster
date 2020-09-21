@@ -8,8 +8,8 @@ import (
 
 	"sync"
 
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/monitor/metrics"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/monitor/metrics"
 
 	logging "github.com/ipfs/go-log/v2"
 	peer "github.com/libp2p/go-libp2p-core/peer"

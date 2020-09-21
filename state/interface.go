@@ -8,7 +8,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/api"
 
 	cid "github.com/ipfs/go-cid"
 )

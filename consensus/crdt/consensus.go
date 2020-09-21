@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/ipfs/go-cid"
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/pstoremgr"
-	"github.com/ipfs/ipfs-cluster/state"
-	"github.com/ipfs/ipfs-cluster/state/dsstate"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/pstoremgr"
+	"github.com/kebohan1/ipfs-cluster/state"
+	"github.com/kebohan1/ipfs-cluster/state/dsstate"
 
 	ds "github.com/ipfs/go-datastore"
 	namespace "github.com/ipfs/go-datastore/namespace"

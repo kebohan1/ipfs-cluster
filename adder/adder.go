@@ -8,8 +8,8 @@ import (
 	"mime/multipart"
 	"strings"
 
-	"github.com/ipfs/ipfs-cluster/adder/ipfsadd"
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/adder/ipfsadd"
+	"github.com/kebohan1/ipfs-cluster/api"
 
 	cid "github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"

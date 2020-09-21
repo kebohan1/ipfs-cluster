@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/api"
 
 	rpc "github.com/libp2p/go-libp2p-gorpc"
 

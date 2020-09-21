@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/state"
-	"github.com/ipfs/ipfs-cluster/state/dsstate"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/state"
+	"github.com/kebohan1/ipfs-cluster/state/dsstate"
 
 	ds "github.com/ipfs/go-datastore"
 	logging "github.com/ipfs/go-log/v2"

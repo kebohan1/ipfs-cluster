@@ -6,8 +6,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/state"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/state"
 
 	cid "github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"

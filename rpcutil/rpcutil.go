@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/api"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 )

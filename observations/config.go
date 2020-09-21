@@ -10,7 +10,7 @@ import (
 
 	ma "github.com/multiformats/go-multiaddr"
 
-	"github.com/ipfs/ipfs-cluster/config"
+	"github.com/kebohan1/ipfs-cluster/config"
 )
 
 const metricsConfigKey = "metrics"

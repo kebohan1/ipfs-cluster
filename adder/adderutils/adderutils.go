@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ipfs/ipfs-cluster/adder"
-	"github.com/ipfs/ipfs-cluster/adder/sharding"
-	"github.com/ipfs/ipfs-cluster/adder/single"
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/adder"
+	"github.com/kebohan1/ipfs-cluster/adder/sharding"
+	"github.com/kebohan1/ipfs-cluster/adder/single"
+	"github.com/kebohan1/ipfs-cluster/api"
 
 	cid "github.com/ipfs/go-cid"
 	logging "github.com/ipfs/go-log/v2"

@@ -7,8 +7,8 @@ import (
 	"go.opencensus.io/tag"
 	"go.opencensus.io/trace"
 
-	"github.com/ipfs/ipfs-cluster/api"
-	"github.com/ipfs/ipfs-cluster/state"
+	"github.com/kebohan1/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/state"
 
 	consensus "github.com/libp2p/go-libp2p-consensus"
 )
