@@ -9,7 +9,7 @@ import (
 
 	cid "github.com/ipfs/go-cid"
 
-	"github.com/ipfs/ipfs-cluster/api"
+	"github.com/kebohan1/ipfs-cluster/api"
 	"go.opencensus.io/trace"
 )
 
