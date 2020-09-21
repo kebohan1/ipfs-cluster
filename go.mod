@@ -36,6 +36,7 @@ require (
 	github.com/ipfs/go-mfs v0.1.2
 	github.com/ipfs/go-path v0.0.7
 	github.com/ipfs/go-unixfs v0.2.4
+	github.com/ipfs/ipfs-cluster v0.13.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/kishansagathiya/go-dot v0.1.0
 	github.com/lanzafame/go-libp2p-ocgorpc v0.1.1

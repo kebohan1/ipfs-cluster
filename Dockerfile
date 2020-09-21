@@ -4,7 +4,7 @@ MAINTAINER Hector Sanjuan <hector@protocol.ai>
 # This dockerfile builds and runs ipfs-cluster-service.
 
 ENV GOPATH      /go
-ENV SRC_PATH    $GOPATH/src/github.com/ipfs/ipfs-cluster
+ENV SRC_PATH    $GOPATH/src/github.com/kebohan1/ipfs-cluster
 ENV GO111MODULE on
 ENV GOPROXY     https://proxy.golang.org
 
@@ -36,7 +36,7 @@ FROM busybox:1-glibc
 MAINTAINER Hector Sanjuan <hector@protocol.ai>
 
 ENV GOPATH                 /go
-ENV SRC_PATH               /go/src/github.com/ipfs/ipfs-cluster
+ENV SRC_PATH               /go/src/github.com/kebohan1/ipfs-cluster
 ENV IPFS_CLUSTER_PATH      /data/ipfs-cluster
 ENV IPFS_CLUSTER_CONSENSUS crdt
 
