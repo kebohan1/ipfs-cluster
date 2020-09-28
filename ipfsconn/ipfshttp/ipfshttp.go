@@ -545,8 +545,9 @@ func (ipfs *Connector) PinLsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinS
 	return api.IPFSPinStatusError, errors.New("expected to find the pin in the response")
 }
 
+// LsCid
 func (ipfs *Connector) LsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinStatus, error) {
-	ctx, span := trace.StartSpan(ctx, "ipfsconn/ipfshttp/PinLsCid")
+	ctx, span := trace.StartSpan(ctx, "ipfsconn/ipfshttp/LsCid")
 	defer span.End()
 
 	ctx, cancel := context.WithTimeout(ctx, ipfs.config.IPFSRequestTimeout)
