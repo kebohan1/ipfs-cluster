@@ -545,6 +545,43 @@ func (ipfs *Connector) PinLsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinS
 	return api.IPFSPinStatusError, errors.New("expected to find the pin in the response")
 }
 
+func (ipfs *Connector) LsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinStatus, error) {
+	ctx, span := trace.StartSpan(ctx, "ipfsconn/ipfshttp/PinLsCid")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, ipfs.config.IPFSRequestTimeout)
+	defer cancel()
+
+	lsPath := fmt.Sprintf("ls?arg=%s", pin.Cid)
+	body, err := ipfs.postCtx(ctx, lsPath, "", nil)
+	if body == nil && err != nil { // Network error, daemon down
+		return api.IPFSPinStatusError, err
+	}
+
+	if err != nil { // we could not find the pin
+		return api.IPFSPinStatusUnpinned, nil
+	}
+
+	var res ipfsPinLsResp
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		logger.Error("error parsing ls?arg=cid response:")
+		logger.Error(string(body))
+		return api.IPFSPinStatusError, err
+	}
+
+	// We do not know what string format the returned key has so
+	// we parse as CID. There should only be one returned key.
+	for k, pinObj := range res.Keys {
+		c, err := cid.Decode(k)
+		if err != nil || !c.Equals(pin.Cid) {
+			continue
+		}
+		return api.IPFSPinStatusFromString(pinObj.Type), nil
+	}
+	return api.IPFSPinStatusError, errors.New("expected to find the pin in the response")
+}
+
 func (ipfs *Connector) doPostCtx(ctx context.Context, client *http.Client, apiURL, path string, contentType string, postBody io.Reader) (*http.Response, error) {
 	logger.Debugf("posting %s", path)
 	urlstr := fmt.Sprintf("%s/%s", apiURL, path)
