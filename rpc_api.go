@@ -518,6 +518,16 @@ func (rpcapi *IPFSConnectorRPCAPI) PinLs(ctx context.Context, in string, out *ma
 	return nil
 }
 
+// PinLsCid runs IPFSConnector.PinLsCid().
+func (rpcapi *IPFSConnectorRPCAPI) LsCid(ctx context.Context, in *api.Pin, out *api.IPFSPinStatus) error {
+	b, err := rpcapi.ipfs.LsCid(ctx, in)
+	if err != nil {
+		return err
+	}
+	*out = b
+	return nil
+}
+
 // ConfigKey runs IPFSConnector.ConfigKey().
 func (rpcapi *IPFSConnectorRPCAPI) ConfigKey(ctx context.Context, in string, out *interface{}) error {
 	res, err := rpcapi.ipfs.ConfigKey(in)
