@@ -189,6 +189,7 @@ const (
 	IPFSPinStatusRecursive
 	IPFSPinStatusIndirect
 	IPFSPinStatusUnpinned
+	IPFSPinStatusLsError
 )
 
 // IPFSPinStatus represents the status of a pin in IPFS (direct, recursive etc.)
@@ -208,6 +209,8 @@ func IPFSPinStatusFromString(t string) IPFSPinStatus {
 		return IPFSPinStatusRecursive
 	case t == "direct":
 		return IPFSPinStatusDirect
+	case t == "lserror":
+		return IPFSPinStatusLsError
 	default:
 		return IPFSPinStatusBug
 	}

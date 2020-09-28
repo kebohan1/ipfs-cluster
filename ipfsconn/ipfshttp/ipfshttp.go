@@ -555,7 +555,7 @@ func (ipfs *Connector) LsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinStat
 	ctx, span := trace.StartSpan(ctx, "ipfsconn/ipfshttp/LsCid")
 	defer span.End()
 
-	ctx, cancel := context.WithTimeout(ctx, ipfs.config.IPFSRequestTimeout)
+	ctx, cancel := context.WithTimeout(ctx, ipfs.config.IPFSLsRequestTimeout)
 	defer cancel()
 
 	lsPath := fmt.Sprintf("ls?arg=%s", pin.Cid)

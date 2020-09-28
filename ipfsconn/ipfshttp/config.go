@@ -18,13 +18,14 @@ const envConfigKey = "cluster_ipfshttp"
 
 // Default values for Config.
 const (
-	DefaultNodeAddr           = "/ip4/127.0.0.1/tcp/5001"
-	DefaultConnectSwarmsDelay = 30 * time.Second
-	DefaultIPFSRequestTimeout = 5 * time.Minute
-	DefaultPinTimeout         = 2 * time.Minute
-	DefaultUnpinTimeout       = 3 * time.Hour
-	DefaultRepoGCTimeout      = 24 * time.Hour
-	DefaultUnpinDisable       = false
+	DefaultNodeAddr             = "/ip4/127.0.0.1/tcp/5001"
+	DefaultConnectSwarmsDelay   = 30 * time.Second
+	DefaultIPFSRequestTimeout   = 5 * time.Minute
+	DefaultIPFSLsRequestTimeout = 1 * time.Minute
+	DefaultPinTimeout           = 2 * time.Minute
+	DefaultUnpinTimeout         = 3 * time.Hour
+	DefaultRepoGCTimeout        = 24 * time.Hour
+	DefaultUnpinDisable         = false
 )
 
 // Config is used to initialize a Connector and allows to customize
@@ -43,6 +44,9 @@ type Config struct {
 	// IPFS Daemon HTTP Client POST timeout
 	IPFSRequestTimeout time.Duration
 
+	// IPFS Daemon Ls HTTP Client POST timeout
+	IPFSLsRequestTimeout time.Duration
+
 	// Pin Operation timeout
 	PinTimeout time.Duration
 
@@ -59,13 +63,14 @@ type Config struct {
 }
 
 type jsonConfig struct {
-	NodeMultiaddress   string `json:"node_multiaddress"`
-	ConnectSwarmsDelay string `json:"connect_swarms_delay"`
-	IPFSRequestTimeout string `json:"ipfs_request_timeout"`
-	PinTimeout         string `json:"pin_timeout"`
-	UnpinTimeout       string `json:"unpin_timeout"`
-	RepoGCTimeout      string `json:"repogc_timeout"`
-	UnpinDisable       bool   `json:"unpin_disable,omitempty"`
+	NodeMultiaddress     string `json:"node_multiaddress"`
+	ConnectSwarmsDelay   string `json:"connect_swarms_delay"`
+	IPFSRequestTimeout   string `json:"ipfs_request_timeout"`
+	IPFSLsRequestTimeout string `json:"ipfs_ls_request_timeout"`
+	PinTimeout           string `json:"pin_timeout"`
+	UnpinTimeout         string `json:"unpin_timeout"`
+	RepoGCTimeout        string `json:"repogc_timeout"`
+	UnpinDisable         bool   `json:"unpin_disable,omitempty"`
 }
 
 // ConfigKey provides a human-friendly identifier for this type of Config.
@@ -79,6 +84,7 @@ func (cfg *Config) Default() error {
 	cfg.NodeAddr = node
 	cfg.ConnectSwarmsDelay = DefaultConnectSwarmsDelay
 	cfg.IPFSRequestTimeout = DefaultIPFSRequestTimeout
+	cfg.IPFSLsRequestTimeout = DefaultIPFSLsRequestTimeout
 	cfg.PinTimeout = DefaultPinTimeout
 	cfg.UnpinTimeout = DefaultUnpinTimeout
 	cfg.RepoGCTimeout = DefaultRepoGCTimeout
@@ -117,6 +123,11 @@ func (cfg *Config) Validate() error {
 
 	if cfg.IPFSRequestTimeout < 0 {
 		err = errors.New("ipfshttp.ipfs_request_timeout invalid")
+	}
+
+	if cfg.IPFSLsRequestTimeout < 0 {
+		err = errors.New("ipfshttp.ipfs_ls_request_timeout invalid")
+
 	}
 
 	if cfg.PinTimeout < 0 {
@@ -162,6 +173,7 @@ func (cfg *Config) applyJSONConfig(jcfg *jsonConfig) error {
 		"ipfshttp",
 		&config.DurationOpt{Duration: jcfg.ConnectSwarmsDelay, Dst: &cfg.ConnectSwarmsDelay, Name: "connect_swarms_delay"},
 		&config.DurationOpt{Duration: jcfg.IPFSRequestTimeout, Dst: &cfg.IPFSRequestTimeout, Name: "ipfs_request_timeout"},
+		&config.DurationOpt{Duration: jcfg.IPFSLsRequestTimeout, Dst: &cfg.IPFSLsRequestTimeout, Name: "ipfs_ls_request_timeout"},
 		&config.DurationOpt{Duration: jcfg.PinTimeout, Dst: &cfg.PinTimeout, Name: "pin_timeout"},
 		&config.DurationOpt{Duration: jcfg.UnpinTimeout, Dst: &cfg.UnpinTimeout, Name: "unpin_timeout"},
 		&config.DurationOpt{Duration: jcfg.RepoGCTimeout, Dst: &cfg.RepoGCTimeout, Name: "repogc_timeout"},
@@ -198,6 +210,7 @@ func (cfg *Config) toJSONConfig() (jcfg *jsonConfig, err error) {
 	jcfg.NodeMultiaddress = cfg.NodeAddr.String()
 	jcfg.ConnectSwarmsDelay = cfg.ConnectSwarmsDelay.String()
 	jcfg.IPFSRequestTimeout = cfg.IPFSRequestTimeout.String()
+	jcfg.IPFSLsRequestTimeout = cfg.IPFSLsRequestTimeout.String()
 	jcfg.PinTimeout = cfg.PinTimeout.String()
 	jcfg.UnpinTimeout = cfg.UnpinTimeout.String()
 	jcfg.RepoGCTimeout = cfg.RepoGCTimeout.String()

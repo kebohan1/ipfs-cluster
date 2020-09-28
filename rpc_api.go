@@ -520,11 +520,10 @@ func (rpcapi *IPFSConnectorRPCAPI) PinLs(ctx context.Context, in string, out *ma
 
 // LsCid runs IPFSConnector.LsCid().
 func (rpcapi *IPFSConnectorRPCAPI) LsCid(ctx context.Context, in *api.Pin, out *api.IPFSPinStatus) error {
-	b, err := rpcapi.ipfs.LsCid(ctx, in)
+	_, err := rpcapi.ipfs.LsCid(ctx, in)
 	if err != nil {
 		return err
 	}
-	*out = b
 	return nil
 }
 
