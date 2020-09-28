@@ -53,6 +53,7 @@ var DefaultRPCPolicy = map[string]RPCEndpointType{
 	"IPFSConnector.Pin":        RPCClosed,
 	"IPFSConnector.PinLs":      RPCClosed,
 	"IPFSConnector.PinLsCid":   RPCClosed,
+	"IPFSConnector.LsCid":      RPCClosed,
 	"IPFSConnector.RepoStat":   RPCTrusted, // Called in broadcast from proxy/repo/stat
 	"IPFSConnector.Resolve":    RPCClosed,
 	"IPFSConnector.SwarmPeers": RPCTrusted, // Called in ConnectGraph
