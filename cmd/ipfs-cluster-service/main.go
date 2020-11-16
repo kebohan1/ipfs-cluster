@@ -1,12 +1,21 @@
 // The ipfs-cluster-service application.
 package main
 
+// #cgo LDFLAGS: -L../../pdp -lpdp -lssl -lcrypto
+// #include "../../pdp/pdp.h"
+// extern PDP_key *generate_pdp_key();
+// extern int write_pdp_keypair(PDP_key *key, char *password,char* keypath);
+import "C"
+
 import (
 	"bufio"
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"io"
+	"math"
+	"math/big"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -126,11 +135,17 @@ var (
 	DefaultConfigFile = "service.json"
 	// The name of the identity file inside DefaultPath
 	DefaultIdentityFile = "identity.json"
+
+	PDPKeyPassphrase = "passphrase"
+
+	PDPKeyPath = "/key/"
 )
 
 var (
 	configPath   string
 	identityPath string
+	pdpPath      string
+	pdpkeyPath   string
 )
 
 func init() {
@@ -173,6 +188,15 @@ func checkErr(doing string, err error, args ...interface{}) {
 	}
 }
 
+// Generate Int64 Random Interger
+func randint64() (*big.Int, error) {
+	val, err := rand.Int(rand.Reader, big.NewInt(int64(math.MaxInt64)))
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = programName
@@ -210,7 +234,8 @@ func main() {
 
 		configPath = filepath.Join(absPath, DefaultConfigFile)
 		identityPath = filepath.Join(absPath, DefaultIdentityFile)
-
+		pdpPath = filepath.Join(absPath, PDPKeyPassphrase)
+		pdpkeyPath = filepath.Join(absPath, PDPKeyPath)
 		err = setupLogLevel(c.Bool("debug"), c.String("loglevel"))
 		if err != nil {
 			return err
@@ -396,6 +421,28 @@ the peer IDs in the given multiaddresses.
 				} else {
 					out("new empty peerstore written to %s.\n", peerstorePath)
 				}
+
+				pdp_key := C.generate_pdp_key()
+
+				password, err := randint64()
+
+				var pdpfile *os.File
+
+				pdpfile, err = os.Create(pdpPath)
+
+				if err != nil {
+					out("PDP file path error\n")
+				}
+
+				_, err = pdpfile.WriteString(password.String())
+
+				os.Mkdir(pdpkeyPath, 0755)
+				os.Create(filepath.Join(pdpkeyPath, "pdp.pri"))
+				os.Create(filepath.Join(pdpkeyPath, "pdp.pub"))
+
+				out("Create pdp keypair:%s\n", pdpkeyPath)
+
+				C.write_pdp_keypair(pdp_key, C.CString(password.String()), C.CString(pdpkeyPath))
 
 				return nil
 			},

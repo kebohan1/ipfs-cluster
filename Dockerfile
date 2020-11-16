@@ -21,7 +21,7 @@ RUN set -x \
   && chmod +x tini
 
 # Get the TLS CA certificates, they're not provided by busybox.
-RUN apt-get update && apt-get install -y ca-certificates
+RUN apt-get update && apt-get install -y ca-certificates libssl-dev openssl
 
 COPY go.* $SRC_PATH/
 WORKDIR $SRC_PATH

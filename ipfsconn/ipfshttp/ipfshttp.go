@@ -576,7 +576,7 @@ func (ipfs *Connector) LsCid(ctx context.Context, pin *api.Pin) (api.IPFSPinStat
 		return api.IPFSPinStatusError, err
 	}
 
-	return api.IPFSPinStatusFromString("Correctly get status from ls"), nil
+	return api.IPFSPinStatusRecursive, nil
 }
 
 func (ipfs *Connector) doPostCtx(ctx context.Context, client *http.Client, apiURL, path string, contentType string, postBody io.Reader) (*http.Response, error) {

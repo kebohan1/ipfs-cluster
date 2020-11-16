@@ -350,6 +350,7 @@ func (spt *Tracker) Status(ctx context.Context, c cid.Cid) *api.PinInfo {
 
 	// else attempt to get status from ipfs node
 	var ips api.IPFSPinStatus
+	var ipls api.IPFSPinStatus
 	err = spt.rpcClient.CallContext(
 		ctx,
 		"",
@@ -366,7 +367,7 @@ func (spt *Tracker) Status(ctx context.Context, c cid.Cid) *api.PinInfo {
 		"IPFSConnector",
 		"LsCid",
 		gpin,
-		nil,
+		&ipls,
 	)
 	if err != nil {
 		logger.Error(err)

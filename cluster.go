@@ -2110,3 +2110,12 @@ func (c *Cluster) RepoGCLocal(ctx context.Context) (*api.RepoGC, error) {
 	resp.Peername = c.config.Peername
 	return resp, nil
 }
+
+func (c *Cluster) RecieveFile(ctx context.Context, file *File) (uint, error) {
+	_, span := trace.StartSpan(ctx, "cluster/RecieveFile")
+	defer span.End()
+	ctx = trace.NewContext(c.ctx, span)
+
+	f := file
+
+}

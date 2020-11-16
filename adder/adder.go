@@ -2,10 +2,18 @@
 // managed by the Cluster.
 package adder
 
+// #cgo LDFLAGS: -L../pdp -lpdp -lssl -lcrypto
+// extern int pdp_tag_file(char *filepath, size_t filepath_len, char *tagfilepath, size_t tagfilepath_len,char* keypath,char* password);
+import "C"
+
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"mime/multipart"
+	"os"
+	"os/user"
+	"path/filepath"
 	"strings"
 
 	"github.com/kebohan1/ipfs-cluster/adder/ipfsadd"
@@ -137,6 +145,25 @@ func (a *Adder) FromFiles(ctx context.Context, f files.Directory) (cid.Cid, erro
 			[]files.DirEntry{files.FileEntry("", f)},
 		)
 	}
+	usr, _ := user.Current()
+	absPath, err := filepath.Abs(usr.HomeDir)
+	pdpPath := filepath.Join(absPath, "/.ipfs-cluster/passphrase")
+	pdpkeyPath := filepath.Join(absPath, "/.ipfs-cluster/key/")
+	pdptagPath := filepath.Join(absPath, "/.ipfs-cluster/tag/")
+
+	logger.Infof("pdpKeyPath:%s", pdpkeyPath)
+	logger.Infof("pdpTagPath:%s", pdptagPath)
+
+	passwordFile, _ := os.Open(pdpPath)
+	defer passwordFile.Close()
+	var password string
+	scanner := bufio.NewScanner(passwordFile)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		password = scanner.Text()
+	}
+
+	logger.Infof("pdpPassword:%s", password)
 
 	it := f.Entries()
 	var adderRoot ipld.Node
@@ -156,7 +183,13 @@ func (a *Adder) FromFiles(ctx context.Context, f files.Directory) (cid.Cid, erro
 		// OutputPrefix to our version. go-ipfs modifies emitted
 		// events before sending to user).
 		ipfsAdder.OutputPrefix = it.Name()
-
+		name := it.Name()
+		size, err := it.Node().Size()
+		err_tag := C.pdp_tag_file(C.CString(name), C.ulong(size), C.CString(pdptagPath), C.ulong(len(pdptagPath)), C.CString(pdpkeyPath), C.CString(password))
+		if err_tag == 1 {
+			logger.Debugf("PDP process Error: %s", it.Name())
+			return cid.Undef, a.ctx.Err()
+		}
 		select {
 		case <-a.ctx.Done():
 			return cid.Undef, a.ctx.Err()
