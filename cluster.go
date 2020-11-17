@@ -2111,11 +2111,22 @@ func (c *Cluster) RepoGCLocal(ctx context.Context) (*api.RepoGC, error) {
 	return resp, nil
 }
 
-func (c *Cluster) RecieveFile(ctx context.Context, file *File) (uint, error) {
+func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, filesize int) (uint, error) {
 	_, span := trace.StartSpan(ctx, "cluster/RecieveFile")
 	defer span.End()
 	ctx = trace.NewContext(c.ctx, span)
 
-	f := file
+	usr, _ := user.Current()
+	absPath, err := filepath.Abs(usr.HomeDir)
+	filePath := filepath.Join(absPath, "/.ipfs-cluster/temp_file/"+filename)
+	file := os.Open(filePath)
+	defer file.Close()
+
+	if _, err := file.Write(buf[:n]); err != nil {
+		return 400, err
+	}
+
+	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
+	//location: api/rest/client/methods.go:583
 
 }
