@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
+	"os"
+	"os/user"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -19,6 +22,7 @@ import (
 
 	cid "github.com/ipfs/go-cid"
 	ds "github.com/ipfs/go-datastore"
+	files "github.com/ipfs/go-ipfs-files"
 	host "github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
@@ -2119,13 +2123,21 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	usr, _ := user.Current()
 	absPath, err := filepath.Abs(usr.HomeDir)
 	filePath := filepath.Join(absPath, "/.ipfs-cluster/temp_file/"+filename)
-	file := os.Open(filePath)
+	file, err := os.Open(filePath)
 	defer file.Close()
 
-	if _, err := file.Write(buf[:n]); err != nil {
+	if _, err := file.Write(buf[:filesize]); err != nil {
 		return 400, err
 	}
 
+	addParams := api.DefaultAddParams()
+
+	//add file into adder
+	var dags adder.ClusterDAGService
+
+	dags = sharding.New(c.rpcClient, addParams.PinOptions, nil)
+
+	add := adder.New(dags, addParams, nil)
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
 
