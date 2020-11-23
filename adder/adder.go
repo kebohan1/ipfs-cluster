@@ -10,6 +10,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"os"
 	"os/user"
@@ -205,6 +206,92 @@ func (a *Adder) FromFiles(ctx context.Context, f files.Directory) (cid.Cid, erro
 	}
 	if it.Err() != nil {
 		return cid.Undef, it.Err()
+	}
+
+	clusterRoot, err := a.dgs.Finalize(a.ctx, adderRoot.Cid())
+	if err != nil {
+		logger.Error("error finalizing adder:", err)
+		return cid.Undef, err
+	}
+	logger.Infof("%s successfully added to cluster", clusterRoot)
+	return clusterRoot, nil
+}
+
+// FromFile adds content file. The adder will no longer
+// be usable after calling this method.
+func (a *Adder) FromFile(ctx context.Context, reader io.Reader, fileInfo os.FileInfo) (cid.Cid, error) {
+	logger.Debug("add from file")
+	a.setContext(ctx)
+
+	if a.ctx.Err() != nil { // don't allow running twice
+		return cid.Undef, a.ctx.Err()
+	}
+
+	defer a.cancel()
+	defer close(a.output)
+
+	ipfsAdder, err := ipfsadd.NewAdder(a.ctx, a.dgs)
+	if err != nil {
+		logger.Error(err)
+		return cid.Undef, err
+	}
+
+	ipfsAdder.Trickle = a.params.Layout == "trickle"
+	ipfsAdder.RawLeaves = a.params.RawLeaves
+	ipfsAdder.Chunker = a.params.Chunker
+	ipfsAdder.Out = a.output
+	ipfsAdder.Progress = a.params.Progress
+	ipfsAdder.NoCopy = a.params.NoCopy
+
+	// Set up prefix
+	prefix, err := merkledag.PrefixForCidVersion(a.params.CidVersion)
+	if err != nil {
+		return cid.Undef, fmt.Errorf("bad CID Version: %s", err)
+	}
+
+	hashFunCode, ok := multihash.Names[strings.ToLower(a.params.HashFun)]
+	if !ok {
+		return cid.Undef, fmt.Errorf("unrecognized hash function: %s", a.params.HashFun)
+	}
+	prefix.MhType = hashFunCode
+	prefix.MhLength = -1
+	ipfsAdder.CidBuilder = &prefix
+
+	file := files.NewReaderFile(reader)
+	usr, _ := user.Current()
+	absPath, err := filepath.Abs(usr.HomeDir)
+	pdpPath := filepath.Join(absPath, "/.ipfs-cluster/passphrase")
+	pdpkeyPath := filepath.Join(absPath, "/.ipfs-cluster/key/")
+	pdptagPath := filepath.Join(absPath, "/.ipfs-cluster/tag/")
+
+	logger.Infof("pdpKeyPath:%s", pdpkeyPath)
+	logger.Infof("pdpTagPath:%s", pdptagPath)
+
+	passwordFile, _ := os.Open(pdpPath)
+	defer passwordFile.Close()
+	var password string
+	scanner := bufio.NewScanner(passwordFile)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		password = scanner.Text()
+	}
+
+	logger.Infof("pdpPassword:%s", password)
+
+	name := fileInfo.Name()
+	size, err := file.Size()
+	err_tag := C.pdp_tag_file(C.CString(name), C.ulong(size), C.CString(pdptagPath), C.ulong(len(pdptagPath)), C.CString(pdpkeyPath), C.CString(password))
+	if err_tag == 1 {
+		logger.Debugf("PDP process Error: %s", name)
+		return cid.Undef, a.ctx.Err()
+	}
+	logger.Debugf("ipfsAdder AddFile(%s)", name)
+	var adderRoot ipld.Node
+	adderRoot, err = ipfsAdder.AddAllAndPin(file)
+	if err != nil {
+		logger.Error("error adding to cluster: ", err)
+		return cid.Undef, err
+
 	}
 
 	clusterRoot, err := a.dgs.Finalize(a.ctx, adderRoot.Cid())

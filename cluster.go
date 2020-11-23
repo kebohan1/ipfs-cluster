@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"os"
 	"os/user"
@@ -2115,7 +2116,7 @@ func (c *Cluster) RepoGCLocal(ctx context.Context) (*api.RepoGC, error) {
 	return resp, nil
 }
 
-func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, filesize int) (uint, error) {
+func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, filesize int) (uint, cid.Cid, error) {
 	_, span := trace.StartSpan(ctx, "cluster/RecieveFile")
 	defer span.End()
 	ctx = trace.NewContext(c.ctx, span)
@@ -2127,7 +2128,7 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	defer file.Close()
 
 	if _, err := file.Write(buf[:filesize]); err != nil {
-		return 400, err
+		return 400, cid.Undef, err
 	}
 
 	addParams := api.DefaultAddParams()
@@ -2138,8 +2139,14 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	dags = sharding.New(c.rpcClient, addParams.PinOptions, nil)
 
 	add := adder.New(dags, addParams, nil)
-	file := files.NewReaderPathFile(filepath,io.ReadCloser,file.)
-	add.FromFiles(ctx,)
+	fileInfo, _ := os.Stat(filePath)
+	reader, _ := files.NewReaderPathFile(filePath, file, fileInfo)
+	cid, err := add.FromFile(ctx, reader, fileInfo)
+	if err != nil {
+		return 400, cid, err
+	} else {
+		return 200, cid, err
+	}
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
 

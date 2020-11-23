@@ -1114,3 +1114,9 @@ type RepoGC struct {
 type GlobalRepoGC struct {
 	PeerMap map[string]*RepoGC `json:"peer_map" codec:"pm,omitempty"`
 }
+
+type TransmitFile struct {
+	ByteFile []byte
+	Name     string
+	Size     int
+}
