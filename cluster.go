@@ -2138,7 +2138,8 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	dags = sharding.New(c.rpcClient, addParams.PinOptions, nil)
 
 	add := adder.New(dags, addParams, nil)
-	root, err := add.FromMultipart(ctx, reader)
+	file := files.NewReaderPathFile(filepath,io.ReadCloser,file.)
+	add.FromFiles(ctx,)
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
 
