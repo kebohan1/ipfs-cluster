@@ -1326,3 +1326,29 @@ func (api *API) setHeaders(w http.ResponseWriter) {
 
 	w.Header().Add("Content-Type", "application/json")
 }
+
+func (api *API) recieveFileHandler(w http.ResponseWriter, r *http.Request) {
+	reader, err := r.MultipartReader()
+	if err != nil {
+		api.sendResponse(w, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	params, err := types.AddParamsFromQuery(r.URL.Query())
+	if err != nil {
+		api.sendResponse(w, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	api.setHeaders(w)
+
+	// any errors sent as trailer
+	adderutils.AddMultipartHTTPHandler(
+		r.Context(),
+		api.rpcClient,
+		params,
+		reader,
+		w,
+		nil,
+	)
+}

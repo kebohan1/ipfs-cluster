@@ -2116,7 +2116,7 @@ func (c *Cluster) RepoGCLocal(ctx context.Context) (*api.RepoGC, error) {
 	return resp, nil
 }
 
-func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, filesize int) (uint, cid.Cid, error) {
+func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, filesize int) (cid.Cid, error) {
 	_, span := trace.StartSpan(ctx, "cluster/RecieveFile")
 	defer span.End()
 	ctx = trace.NewContext(c.ctx, span)
@@ -2128,7 +2128,7 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	defer file.Close()
 
 	if _, err := file.Write(buf[:filesize]); err != nil {
-		return 400, cid.Undef, err
+		return cid.Undef, err
 	}
 
 	addParams := api.DefaultAddParams()
@@ -2143,9 +2143,9 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	reader, _ := files.NewReaderPathFile(filePath, file, fileInfo)
 	cid, err := add.FromFile(ctx, reader, fileInfo)
 	if err != nil {
-		return 400, cid, err
+		return cid, err
 	} else {
-		return 200, cid, err
+		return cid, err
 	}
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
