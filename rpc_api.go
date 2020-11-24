@@ -426,7 +426,14 @@ func (rpcapi *ClusterRPCAPI) SendInformersMetrics(ctx context.Context, in struct
 	return nil
 }
 
-func (rpcapi *ClusterRPCAPI) RecieveFile(ctx context.Context, in *api.TransmitFile, out *cid.Cid)
+func (rpcapi *ClusterRPCAPI) RecieveFile(ctx context.Context, in *api.TransmitFile, out *cid.Cid) error {
+	c, err := rpcapi.c.RecieveFile(ctx, in.ByteFile, in.Name, in.Size)
+	if err != nil {
+		return err
+	}
+	*out = c
+	return nil
+}
 
 /*
    Tracker component methods

@@ -100,6 +100,24 @@ func (a *Adder) FromMultipart(ctx context.Context, r *multipart.Reader) (cid.Cid
 	return a.FromFiles(ctx, f)
 }
 
+// FromOnepart adds content form a multipart.Reader
+func (a *Adder) FromOnepart(ctx context.Context, r *multipart.Reader) (cid.Cid, error) {
+	logger.Debugf("adding from multipart with params: %+v", a.params)
+
+	f, err := files.NewFileFromPartReader(r, "multipart/form-data")
+	if err != nil {
+		return cid.Undef, err
+	}
+	defer f.Close()
+	it := f.Entries()
+	for it.Next() {
+		name := it.Name()
+		file := files.ToFile(it.Node())
+		return a.FromFile(ctx, file, name)
+	}
+	return a.FromFiles(ctx, f)
+}
+
 // FromFiles adds content from a files.Directory. The adder will no longer
 // be usable after calling this method.
 func (a *Adder) FromFiles(ctx context.Context, f files.Directory) (cid.Cid, error) {
@@ -219,7 +237,7 @@ func (a *Adder) FromFiles(ctx context.Context, f files.Directory) (cid.Cid, erro
 
 // FromFile adds content file. The adder will no longer
 // be usable after calling this method.
-func (a *Adder) FromFile(ctx context.Context, reader io.Reader, fileInfo os.FileInfo) (cid.Cid, error) {
+func (a *Adder) FromFile(ctx context.Context, reader io.Reader, name string) (cid.Cid, error) {
 	logger.Debug("add from file")
 	a.setContext(ctx)
 
@@ -278,7 +296,6 @@ func (a *Adder) FromFile(ctx context.Context, reader io.Reader, fileInfo os.File
 
 	logger.Infof("pdpPassword:%s", password)
 
-	name := fileInfo.Name()
 	size, err := file.Size()
 	err_tag := C.pdp_tag_file(C.CString(name), C.ulong(size), C.CString(pdptagPath), C.ulong(len(pdptagPath)), C.CString(pdpkeyPath), C.CString(password))
 	if err_tag == 1 {

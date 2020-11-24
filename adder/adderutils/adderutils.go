@@ -155,7 +155,7 @@ func AddOnepartHTTPHandler(
 
 		enc := json.NewEncoder(w)
 		add := adder.New(dags, params, output)
-		root, err := add.FromMultipart(ctx, reader)
+		root, err := add.FromOnepart(ctx, reader)
 		if err != nil { // Send an error
 			logger.Error(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -189,7 +189,7 @@ func AddOnepartHTTPHandler(
 		streamOutput(w, output, outputTransform)
 	}()
 	add := adder.New(dags, params, output)
-	root, err := add.FromMultipart(ctx, reader)
+	root, err := add.FromOnepart(ctx, reader)
 	if err != nil {
 		logger.Error(err)
 		// Set trailer with error

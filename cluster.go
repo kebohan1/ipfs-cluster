@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"os"
 	"os/user"
@@ -2141,7 +2140,7 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	add := adder.New(dags, addParams, nil)
 	fileInfo, _ := os.Stat(filePath)
 	reader, _ := files.NewReaderPathFile(filePath, file, fileInfo)
-	cid, err := add.FromFile(ctx, reader, fileInfo)
+	cid, err := add.FromFile(ctx, reader, fileInfo.Name())
 	if err != nil {
 		return cid, err
 	} else {
