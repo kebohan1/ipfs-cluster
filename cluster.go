@@ -2149,5 +2149,7 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	}
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
-
+	func (c *Cluster) SentFile(reader *multipart.Reader, params *api.AddParams) (cid.Cid, error) {
+		
+	}
 }
