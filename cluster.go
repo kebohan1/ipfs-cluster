@@ -2148,7 +2148,10 @@ func (c *Cluster) RecieveFile(ctx context.Context, buf []byte, filename string, 
 	}
 	//return c.AddMultiFile(ctx, files.NewMultiFileReader(sliceFile, true), params, out)
 	//location: api/rest/client/methods.go:583
-	func (c *Cluster) SentFile(reader *multipart.Reader, params *api.AddParams) (cid.Cid, error) {
-		
-	}
+	
+}
+func (c *Cluster) SentFile(reader *multipart.Reader, params *api.AddParams) (cid.Cid, error) {
+	f, err := files.NewFileFromPartReader(reader, "multipart/form-data")
+	add := adder.New(dags, params, nil)
+	return add.FromMultipart(c.ctx, reader)
 }
